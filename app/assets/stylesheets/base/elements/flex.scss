@@ -1,0 +1,46 @@
+.flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex.space-items {
+  justify-content: space-around;
+}
+
+.flex.center {
+  align-items: center;
+}
+
+.flex.center-items {
+  justify-content: center;
+  & > * {
+    flex: 0 1 5rem;
+  }
+}
+
+.flex.vertical {
+  flex-direction: column;
+}
+
+.flex.right {
+  justify-content: flex-end;
+}
+
+.flex.horizontal {
+  flex-direction: row;
+
+  & > * {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0.25rem;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+  label {
+    font-weight: initial;
+    font-size: 1.1rem;
+  }
+}

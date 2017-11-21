@@ -37,18 +37,22 @@ RSpec.describe "Users API", type: :request do
   end
 
   describe "GET /users" do
-    it "should never be allowed" do
+    it "should be forbidden for unauthenticated users" do
       get users_path
       expect(response).to have_http_status(403)
+    end
 
+    it "should be forbidden for non-admin users" do
       sign_in user
       get users_path
-      expect(response).to have_http_status(405)
+      expect(response).to have_http_status(403)
       sign_out user
+    end
 
+    it "should be allowed for admin users" do
       sign_in admin_user
       get users_path
-      expect(response).to have_http_status(405)
+      expect(response).to have_http_status(200)
     end
   end
 
@@ -180,6 +184,61 @@ RSpec.describe "Users API", type: :request do
     it "doesn't allow unauthenticated users to update info" do
       put user_path(user[:id]), params: update_params.to_json, headers: json_headers
       expect(response).to have_http_status(403)
+    end
+  end
+
+  describe "PUT /users/me/change_password" do
+    let(:old_password) { Faker::Internet.password }
+    let(:new_password) { Faker::Internet.password }
+    let!(:test_user) { create(:user, password: old_password, password_confirmation: old_password) }
+    let(:password_params) do
+      {
+        old_password: old_password,
+        new_password: new_password,
+        new_password_confirm: new_password
+      }
+    end
+
+    it "is forbidden if not signed in" do
+      put user_change_password_path, params: password_params.to_json, headers: json_headers
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it "succeeds if user signed in and old passsword correct and new passwords match" do
+      sign_in test_user
+      put user_change_password_path, params: password_params.to_json, headers: json_headers
+      expect(response).to have_http_status(:no_content)
+      u = User.find(test_user.id)
+      expect(u.valid_password?(new_password)).to be true
+    end
+
+    it "fails if old password is incorrect" do
+      req_params = {
+        old_password: new_password,
+        new_password: new_password,
+        new_password_confirm: new_password
+      }
+      sign_in test_user
+      put user_change_password_path, params: req_params.to_json, headers: json_headers
+      expect(response).to have_http_status(:bad_request)
+      expect(json["message"]).to include("incorrect")
+      u = User.find(test_user.id)
+      expect(u.valid_password?(new_password)).to be false
+    end
+
+    it "fails if new passwords do not match" do
+      req_params = {
+        old_password: old_password,
+        new_password: new_password,
+        new_password_confirm: old_password
+      }
+      sign_in test_user
+      put user_change_password_path, params: req_params.to_json, headers: json_headers
+      expect(response).to have_http_status(:bad_request)
+      expect(json["message"]).to include("not")
+      expect(json["message"]).to include("match")
+      u = User.find(test_user.id)
+      expect(u.valid_password?(new_password)).to be false
     end
   end
 

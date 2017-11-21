@@ -2,11 +2,17 @@ class InviteCode < ApplicationRecord
   validates_presence_of :email
   before_save :generate_code
   after_create :send_email
+  belongs_to :competition, optional: true
+  belongs_to :user, optional: true
+
+  def used
+    !user.nil?
+  end
 
   protected
 
   def send_email
-    InviteCodeMailer.invite(self).deliver_now
+    InviteCodeMailer.invite(self).deliver_now unless used
   end
 
   # generates random invite code

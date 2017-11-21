@@ -25,10 +25,11 @@ nav {
   a {
     font-family: $font-title;
     text-decoration: none;
-    text-transform: lowercase;
+    // text-transform: lowercase;
     font-size: 0.8rem;
     color: $color-bg;
     max-width: none;
+    font-weight: 500;
     flex-grow: 1;
     flex-basis: 0;
     text-align: center;
@@ -36,22 +37,51 @@ nav {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-content: center;
     margin: 0;
+    position: relative;
 
-    .nav-icon {
-      font-size: 1.25rem;
+    .notification-count {
+      background: $color-accent;
+      color: $color-bg;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: $border-radius;
+      position: absolute;
+      right: 0.1rem;
+      top: 0.1rem;
+      text-align: center;
+      vertical-align: middle;
+      line-height: 1.5rem;
+
+      @include respond-to(600px) {
+        top: -1.2rem;
+        right: -0.5rem;
+      }
+    }
+
+    svg {
+      margin: 0 auto;
       margin-bottom: 0.2rem;
     }
 
-    &:hover, &.active {
-      color: $color-bg;
+    &:hover,
+    &.active {
+      color: $color-fg;
       text-decoration: none;
       background-color: $color-accent;
+
+      .notification-count {
+        background: $color-fg;
+        @include respond-to(600px) {
+          background: $color-accent;
+        }
+      }
     }
   }
 
   @include respond-to($navigation-switch-width) {
-    height: 5rem;
+    height: $top-nav-height;
     position: inherit;
 
     div {
@@ -66,14 +96,15 @@ nav {
     }
 
     a {
-      margin: 0 0.5rem;
+      margin: 0 1rem;
       max-width: 7rem;
       word-spacing: 5rem;
       text-align: center;
       font-size: 1.25rem;
       flex-basis: auto;
+      flex-grow: 0;
 
-      .nav-icon {
+      svg {
         display: none;
       }
 
@@ -86,6 +117,7 @@ nav {
       &:hover {
         text-decoration: underline;
         background-color: inherit;
+        color: $color-accent;
       }
     }
   }

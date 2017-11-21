@@ -1,8 +1,18 @@
 // global typography styles.
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
   font-family: $font-title;
-  font-weight: 400;
+}
+
+p {
+  font-size: 1rem;
+  margin: 0.5rem 0;
 }
 
 html {
@@ -19,7 +29,7 @@ html {
   &:after {
     position: absolute;
     content: "";
-    top: 125%;
+    bottom: -0.75rem;
     left: 0;
     width: 2rem;
     height: 0.4rem;
@@ -28,22 +38,97 @@ html {
 }
 
 @-moz-keyframes spin {
-    from { -moz-transform: rotate(0deg); }
-    to { -moz-transform: rotate(360deg); }
+  from {
+    -moz-transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(360deg);
+  }
 }
 @-webkit-keyframes spin {
-    from { -webkit-transform: rotate(0deg); }
-    to { -webkit-transform: rotate(360deg); }
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
 }
 @keyframes spin {
-    from {transform:rotate(0deg);}
-    to {transform:rotate(360deg);}
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 .spinner {
   animation-name: spin;
   animation-duration: 700ms;
   animation-iteration-count: infinite;
-  animation-timing-function: linear;
+  animation-timing-function: ease-in-out;
   margin: 0;
   padding: 0;
+}
+
+.title-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  max-width: 100%;
+
+  h1 {
+    height: 3rem;
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    flex: 1;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+
+  p {
+    margin: 0 0.5rem !important;
+  }
+
+  button,
+  .button {
+    margin-left: 0.25rem !important;
+    margin-right: 0.25rem !important;
+  }
+
+  *:first-child {
+    margin-left: 0 !important;
+  }
+
+  *:last-child {
+    margin-right: 0 !important;
+  }
+}
+
+.help-text {
+  align-self: center;
+  text-align: center;
+  font-style: italic;
+  color: lighten($color-fg, 20);
+  text-transform: unset !important;
+}
+
+.icon {
+  @extend .button.square;
+  background: none !important;
+  min-width: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: darken($color-card, 30);
+}
+
+.center {
+  text-align: center;
 }

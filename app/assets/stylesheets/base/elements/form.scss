@@ -1,6 +1,14 @@
 $edited-fg: #8f791d;
 $edited-bg: lighten($edited-fg, 50);
 
+form {
+  progress {
+    @include respond-to(900px) {
+      width: 50%;
+    }
+  }
+}
+
 label {
   display: block;
   font-weight: bold;
@@ -12,14 +20,24 @@ label {
   background-color: darken($color-card, 10);
   font-size: 1.1rem;
   padding: 0.25rem 0.4rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  transition: all 0.25s ease-in-out;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="time"],
+input[type="number"],
+textarea {
   font-family: $font-body;
   font-size: 1.1rem;
   transition: all 0.25s ease-in-out;
-  border: none;
-  border-bottom: $color-accent solid 0;
+  border: $color-fg solid 1px;
+  border-radius: $border-radius;
   outline: none;
   padding: 0.25rem;
   position: relative;
@@ -27,22 +45,25 @@ input[type="text"] {
   flex-grow: 1;
   background-color: transparent;
 
+  .input-group & {
+    border: none;
+  }
+
   &::selection {
     background-color: $color-accent;
     color: $color-bg;
   }
 
   &:focus {
-    // border-bottom: $color-accent solid 0.2rem;
     background-color: rgba($color-fg, 0.1);
   }
 }
 
 textarea {
-  @extend input[type="text"];
   width: 100%;
   min-height: 5rem;
   border: $color-fg solid 1px;
+  border-radius: $border-radius;
 
   &.edited {
     border-color: $edited-fg;
@@ -56,15 +77,136 @@ textarea {
 
 .input-group {
   border: $color-fg solid 1px;
+  border-radius: $border-radius;
   display: flex;
   flex-direction: row;
 
   @include respond-to(900px) {
-    display: inline-block;
+    width: 50%;
   }
 
   &.edited {
     border-color: $edited-fg;
     background-color: $edited-bg;
+
+    .input-addon {
+      background-color: $edited-fg;
+      color: $color-bg;
+    }
   }
+
+  &.invalid {
+    border-color: $color-red;
+    background-color: lighten($color-red, 30);
+
+    input {
+      color: darken($color-red, 10);
+    }
+
+    .input-addon {
+      background-color: $color-red;
+      color: $color-bg;
+    }
+  }
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  position: relative;
+  width: $input-radius;
+  height: $input-radius;
+  &::before,
+  &::after {
+    box-sizing: border-box;
+    content: "";
+    display: block;
+    position: absolute;
+  }
+
+  &::before {
+    border: 0.1rem solid $color-fg;
+    background-color: $color-card;
+  }
+
+  &:focus::before {
+    border-color: #0000ff;
+    border-style: dashed;
+  }
+  &:disabled::before {
+    border-color: lighten($color-fg, 50);
+  }
+}
+
+input[type="radio"] {
+  &::before,
+  &::after {
+    box-sizing: border-box;
+    content: "";
+    display: block;
+    position: absolute;
+    border-radius: 50%;
+  }
+
+  &::before {
+    width: $input-radius;
+    height: $input-radius;
+    left: calc(50% - #{$input-radius / 2});
+    top: calc(50% - #{$input-radius / 2});
+    border-radius: 50%;
+  }
+
+  &::after {
+    $size: $input-radius * 0.5;
+    width: $size;
+    height: $size;
+    background-color: $color-accent;
+    left: calc(50% - #{$size / 2});
+    top: calc(50% - #{$size / 2});
+    transition: transform 0.15s ease-in-out;
+    transform: scale(0);
+  }
+
+  &:checked::after {
+    transform: scale(1);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    ::after {
+      background-color: desaturate($color-red, 100);
+    }
+  }
+}
+
+input[type="checkbox"] {
+  &::before {
+    width: $input-radius;
+    height: $input-radius;
+    border-radius: $border-radius;
+  }
+  &::after {
+    $line-width: 0.2rem;
+    $height: $input-radius * 0.7;
+    $width: 0.5rem;
+    border-color: $color-accent;
+    border-style: solid;
+    border-width: 0 $line-width $line-width 0;
+    width: $width;
+    height: $height;
+
+    left: calc(50% - #{$width / 2});
+    top: calc(45% - #{$height / 2});
+    transition: opacity 0.1s ease-in-out;
+    transform: rotate(45deg);
+    opacity: 0;
+  }
+  &:checked::after {
+    opacity: 1;
+  }
+  &:disabled {
+    &::after {
+      border-color: desaturate($color-red, 100);
+    }
+  }
+  color: $color-accent;
 }

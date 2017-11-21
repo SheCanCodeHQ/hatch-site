@@ -1,39 +1,52 @@
-/* eslint react/prop-types: 0 */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import * as Icon from "react-feather";
+import { fetchCompetition } from "libs/actions/competitionActions";
 import FeedContainer from "./FeedContainer";
-import * as pageNavActions from "../../actions/pageNavActions";
 
 class HomePage extends Component {
+  static mapStateToProps = state => ({
+    isFetching: state.competition.isFetching,
+  });
+
+  static mapDispatchToProps = dispatch => ({
+    fetchCompetition: () => dispatch(fetchCompetition()),
+  });
+
   static propTypes = {
-    updateBackButton: PropTypes.func.isRequired,
     user: PropTypes.shape(),
-  }
+    fetchCompetition: PropTypes.func.isRequired,
+    isFetching: PropTypes.bool,
+  };
 
   static defaultProps = {
     user: {},
-  }
-
-  componentDidMount() {
-    this.props.updateBackButton();
-  }
+    isFetching: false,
+  };
 
   render() {
-    const { user } = this.props;
+    const { user, isFetching } = this.props;
     return (
       <div>
-        <h1>Hello, <span className="accent">{ user.first_name }</span>.</h1>
+        <div className="title-bar">
+          <h1>
+            Hello, <span className="accent">{user.first_name}</span>.
+          </h1>
+          <button
+            className="square mint"
+            disabled={isFetching}
+            onClick={() => this.props.fetchCompetition()}
+          >
+            <Icon.RefreshCw className={isFetching ? "spinner" : ""} />
+          </button>
+        </div>
         <FeedContainer />
       </div>
     );
   }
 }
 
-const mapStateToProps = (state, ownProps) => ownProps;
-
-const mapDispatchToProps = dispatch => ({
-  updateBackButton: () => dispatch(pageNavActions.pageHasNavigated("/", false)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
+export default connect(HomePage.mapStateToProps, HomePage.mapDispatchToProps)(
+  HomePage,
+);

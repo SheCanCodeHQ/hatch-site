@@ -8,7 +8,7 @@ end
 gem "dotenv-rails", require: "dotenv/rails-now", groups: %i[development test]
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem "rails", "~> 5.1.2"
+gem "rails", "~> 5"
 # Use postgresql as the database for Active Record
 gem "pg", "~> 0.18"
 # Use Puma as the app server
@@ -27,7 +27,8 @@ gem "turbolinks", "~> 5"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jbuilder", "~> 2.5"
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 3.0'
+gem "redis", "~> 3.0"
+gem "redis-namespace"
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -58,19 +59,27 @@ end
 
 group :test do
   gem "database_cleaner"
-  gem "factory_girl_rails", "~> 4.0"
+  gem "factory_bot_rails"
   gem "faker"
   gem "shoulda-matchers", "~> 3.1"
+end
+
+group :production do
+  gem "mailgun-ruby", "~>1.1.6"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 
-gem "react_on_rails", "8.0.0"
+gem "react_on_rails", "9.0.0"
 
-gem "mini_racer", platforms: :ruby
-gem "webpacker_lite"
+# build mini_racer on alpine
+gem "libv8"
+gem "mini_racer", "~> 0.1.11", platforms: :ruby
+gem "webpacker"
 
 gem "devise"
 
-gem "font-awesome-sass"
+gem "geocoder"
+
+gem "paperclip", "~> 5.0.0"

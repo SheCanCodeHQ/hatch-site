@@ -5,4 +5,10 @@ html {
 
 body {
   margin: 0;
+  position: relative;
+  z-index: 0;
+}
+
+hr {
+  border: 0.1rem solid $color-accent;
 }

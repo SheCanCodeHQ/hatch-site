@@ -1,0 +1,76 @@
+.splitview-main {
+  flex-direction: column;
+  margin-top: 2rem;
+  display: flex;
+
+  .splitview-nav {
+    flex: none;
+    border-bottom: 0.2rem solid $color-accent;
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+
+    a {
+      font-family: $font-title;
+      display: block;
+      padding: 0.5rem 0.5rem;
+      text-decoration: none;
+      color: $color-accent;
+      background-color: $color-bg;
+      transition: all 0.25s ease-in-out;
+      border-radius: 0.5rem;
+
+      &:hover {
+        background-color: $color-card;
+        text-decoration: underline;
+      }
+
+      &.active {
+        background-color: $color-accent;
+        color: $color-bg;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .splitview-pane {
+    flex: none;
+    margin-bottom: 1rem;
+
+    h2 {
+      font-size: 1.6rem;
+      color: inherit;
+      margin: 1.5rem 0 0;
+      &:after {
+        display: none;
+      }
+    }
+
+    img.icon {
+      width: 100%;
+      @include respond-to(600px) {
+        width: 25%;
+      }
+    }
+  }
+
+  @include respond-to(900px) {
+    // make sidebar a sidebar
+    flex-direction: row !important;
+
+    .splitview-nav {
+      flex: 2 2 0px !important;
+      margin-bottom: 0;
+      margin-right: 1rem;
+      border-right: solid 1px $color-accent;
+      border-bottom: none;
+      padding-bottom: none;
+
+      a {
+        border-radius: 0.5rem 0 0 0.5rem;
+      }
+    }
+    .splitview-pane {
+      flex: 7 7 0px !important;
+    }
+  }
+}

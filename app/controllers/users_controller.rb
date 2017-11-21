@@ -1,16 +1,22 @@
 class UsersController < ApplicationController
   before_action :json_authenticate_user
-  before_action :set_user, only: %i[show update destroy]
+  before_action :admin_only, only: %i[create index index_deleted destroy hard_destroy]
+  before_action :set_user, only: %i[show update destroy hard_destroy]
+  before_action :set_user_self, only: %i[show_self update_self change_password]
   before_action :user_not_deleted, only: %i[show update destroy]
+  before_action :password_params, only: %i[change_password]
 
   def create
-    return head :forbidden unless current_user.admin?
     @user = User.create!(user_create_params)
     json_response(@user, :created)
   end
 
   def index
-    head :method_not_allowed
+    json_response(User.all.select { |i| i.deleted_at.nil? }, :ok)
+  end
+
+  def index_deleted
+    json_response(User.where.not(deleted_at: nil), :ok)
   end
 
   def show
@@ -22,7 +28,6 @@ class UsersController < ApplicationController
   end
 
   def show_self
-    @user = User.find_by_id(current_user[:id])
     json_response(@user)
   end
 
@@ -33,14 +38,26 @@ class UsersController < ApplicationController
   end
 
   def update_self
-    @user = User.find_by_id(current_user[:id])
     @user.update(user_params)
     head :no_content
   end
 
+  def change_password
+    return json_response({ message: "Password is incorrect" }, :bad_request) unless @user.valid_password?(password_params[:old_password])
+    return json_response({ message: "New passwords do not match" }, :bad_request) unless password_params[:new_password] == password_params[:new_password_confirm]
+    @user.update(password: password_params[:new_password],
+                 password_confirmation: password_params[:new_password_confirm])
+    bypass_sign_in @user
+    head :no_content
+  end
+
   def destroy
-    return head :forbidden unless current_user.admin?
     @user.soft_delete
+    head :no_content
+  end
+
+  def hard_destroy
+    @user.destroy
     head :no_content
   end
 
@@ -48,6 +65,10 @@ class UsersController < ApplicationController
 
   def set_user
     @user = User.find(params[:id])
+  end
+
+  def set_user_self
+    @user = User.find_by_id(current_user[:id])
   end
 
   def user_not_deleted
@@ -88,5 +109,9 @@ class UsersController < ApplicationController
       :contact_github,
       :bio
     )
+  end
+
+  def password_params
+    params.permit(:old_password, :new_password, :new_password_confirm)
   end
 end
