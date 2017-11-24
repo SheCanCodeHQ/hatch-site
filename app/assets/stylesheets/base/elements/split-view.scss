@@ -21,13 +21,13 @@
 
       &:hover {
         background-color: $color-card;
-        text-decoration: underline;
+        text-decoration: none;
       }
 
       &.active {
         background-color: $color-accent;
         color: $color-bg;
-        text-decoration: underline;
+        text-decoration: none;
       }
     }
   }
