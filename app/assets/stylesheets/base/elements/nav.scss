@@ -111,11 +111,11 @@ nav {
       &.active {
         color: $color-accent;
         background-color: transparent;
-        text-decoration: underline;
+        text-decoration: none;
       }
 
       &:hover {
-        text-decoration: underline;
+        text-decoration: none;
         background-color: inherit;
         color: $color-accent;
       }
